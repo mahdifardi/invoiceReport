@@ -22,4 +22,8 @@ export class ServiceFactory {
   getInvoiceHandler(): InvoiceHnadler {
     return this.invoiceHandler;
   }
+
+  getInvoiceService(): InvoiceService {
+    return this.invliceService;
+  }
 }

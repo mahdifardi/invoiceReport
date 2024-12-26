@@ -6,7 +6,7 @@ import { Invoice } from "./model/invoice.model";
 export class InvoiceHnadler {
   constructor(private invoiceService: InvoiceService) {}
 
-  public async createInvoice(dto: InvoiceDto): Promise<Invoice> {
+  public async createInvoice(dto: InvoiceDto): Promise<InvoiceEntity> {
     return this.invoiceService.createInvoice(dto);
   }
 

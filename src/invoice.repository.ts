@@ -30,7 +30,7 @@ export class InvoiceRepository {
     this.invoiceRepo = appDataSource.getRepository(InvoiceEntity);
   }
 
-  public async create(invoice: CreateInvoice): Promise<Invoice> {
+  public async create(invoice: CreateInvoice): Promise<InvoiceEntity> {
     const newInvoice = this.invoiceRepo.create({
       customer: invoice.customer,
       amount: invoice.amount,

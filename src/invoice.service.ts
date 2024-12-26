@@ -7,7 +7,7 @@ import { InvoiceEntity } from "./entity/invoice.entity";
 export class InvoiceService {
   constructor(private invoiceRepo: InvoiceRepository) {}
 
-  async createInvoice(dto: InvoiceDto): Promise<Invoice> {
+  async createInvoice(dto: InvoiceDto): Promise<InvoiceEntity> {
     const invoice = this.invoiceRepo.create(dto);
 
     return invoice;
