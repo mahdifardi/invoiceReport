@@ -1,6 +1,6 @@
 import http from "http";
-import { ServiceFactory } from "../../src/utility/ServiceFactory";
-import { createTestDb } from "../../src/utility/test-db";
+import { ServiceFactory } from "../../src/invoice-creation/utility/ServiceFactory";
+import { createTestDb } from "../../src/invoice-creation/utility/test-db";
 import { makeApp } from "../../src/api";
 import request from "supertest";
 
