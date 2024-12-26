@@ -1,44 +1,56 @@
-version: '3.8'
+version: "3.8"
 services:
   backend:
     build: .
     container_name: backend
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
-    # volumes:
-    #   - .:/code
     depends_on:
       - db
-    networks:
-      - bridge
     environment:
-      MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@db:${MONGO_PORT}"
-      RABBITMQ_URI: "amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:${RABBITMQ_PORT}"
-      RABBITMQ_MANAGEMENT_URI: "http://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:${RABBITMQ_MANAGEMENT_PORT}"
+      - DATABASE_HOST=db
+      - MONGO_PORT=${MONGO_PORT}
+      - DATABASE_NAME=${DATABASE_NAME}
+      # - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      # - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+
   db:
-    image: mongo 
-    container_name: db 
-    networks:
-      - bridge
+    image: mongo
+    container_name: db
     volumes:
       - mongo_data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+    #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
-  
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "27017"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=db
+      # - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      # - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    depends_on:
+      - db
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
       - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
       - "${RABBITMQ_MANAGEMENT_PORT}:${RABBITMQ_MANAGEMENT_PORT}"
-    networks:
-      - bridge
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    
 
   nginx:
     image: nginx:latest
@@ -47,17 +59,9 @@ services:
       - "${NGINX_PORT}:${NGINX_PORT}"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-    networks:
-      - bridge
-
-networks:
-  bridge:
-    driver: bridge
 
 volumes:
   rabbitmq_data:
     driver: local
-  
   mongo_data:
     driver: local
-
