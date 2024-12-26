@@ -1,6 +1,7 @@
 import { makeApp } from "./api";
 import { AppDataSource } from "./data-source";
-import { ServiceFactory } from "./utility/ServiceFactory";
+import { ServiceFactory } from "./invoice-creation/utility/ServiceFactory";
+import { CronJobService } from "./sales-report/sales-summary-report";
 
 const run = async () => {
   const PORT = Number(process.env.BACKEND_PORT) || 3000;
@@ -9,6 +10,8 @@ const run = async () => {
   const serviceFactory = new ServiceFactory(dataSource);
 
   const app = makeApp(dataSource, serviceFactory.getInvoiceHandler());
+  const cronJobService = new CronJobService(serviceFactory.getInvoiceService());
+  console.log(cronJobService);
 
   app.listen(PORT, () => {
     console.log("Listening on Port " + PORT);

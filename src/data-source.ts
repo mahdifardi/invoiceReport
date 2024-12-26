@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { InvoiceEntity } from "./entity/invoice.entity";
+import { InvoiceEntity } from "./invoice-creation/entity/invoice.entity";
 
 export const AppDataSource = new DataSource({
   type: "mongodb",

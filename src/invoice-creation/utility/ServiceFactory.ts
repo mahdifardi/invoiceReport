@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
-import { InvoiceHnadler } from "../invoiceHnadler";
 import { InvoiceRepository } from "../invoice.repository";
 import { InvoiceService } from "../invoice.service";
+import { InvoiceHnadler } from "../invoiceHnadler";
 
 export class ServiceFactory {
   private dataSource: DataSource;

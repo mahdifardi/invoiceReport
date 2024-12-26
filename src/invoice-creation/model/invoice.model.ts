@@ -1,5 +1,3 @@
-import { Item } from "./item.model";
-
 export interface Invoice {
   customer: string;
   amount: number;

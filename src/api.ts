@@ -1,10 +1,10 @@
 import { DataSource } from "typeorm";
 import express from "express";
-import { errorHandler } from "./middlewares/error-handler.mmiddleware";
+import { errorHandler } from "./invoice-creation/middlewares/error-handler.mmiddleware";
 import http from "http";
 import cors from "cors";
-import { makeInvoiceRouter } from "./routes/invoice.route";
-import { InvoiceHnadler } from "./invoiceHnadler";
+import { makeInvoiceRouter } from "./invoice-creation/routes/invoice.route";
+import { InvoiceHnadler } from "./invoice-creation/invoiceHnadler";
 
 export const makeApp = (
   dataSource: DataSource,

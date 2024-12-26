@@ -1,7 +1,7 @@
 import { Router } from "express";
+import { invoiceDto } from "../dto/invoice.dto";
 import { handleExpress } from "../utility/handle-express";
 import { InvoiceHnadler } from "../invoiceHnadler";
-import { invoiceDto } from "../dto/invoice.dto";
 
 export const makeInvoiceRouter = (invoiceHnadler: InvoiceHnadler) => {
   const app = Router();

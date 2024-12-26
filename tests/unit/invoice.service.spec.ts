@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
-import { InvoiceEntity } from "../../src/entity/invoice.entity";
-import { createTestDb } from "../../src/utility/test-db";
-import { ServiceFactory } from "../../src/utility/ServiceFactory";
-import { InvoiceService } from "../../src/invoice.service";
+import { InvoiceEntity } from "../../src/invoice-creation/entity/invoice.entity";
+import { createTestDb } from "../../src/invoice-creation/utility/test-db";
+import { ServiceFactory } from "../../src/invoice-creation/utility/ServiceFactory";
+import { InvoiceService } from "../../src/invoice-creation/invoice.service";
 
 describe("MongoDB with TypeORM", () => {
   let dataSource: DataSource;
