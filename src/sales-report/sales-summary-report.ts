@@ -3,7 +3,10 @@ import { InvoiceService } from "../invoice-creation/invoice.service";
 import { RabbitMQService } from "./rabbitmq.service";
 
 export class CronJobService {
-  constructor(private invoiceService: InvoiceService, private rabbitMQService: RabbitMQService) {
+  constructor(
+    private invoiceService: InvoiceService,
+    private rabbitMQService: RabbitMQService
+  ) {
     this.scheduleJob();
   }
 
@@ -12,8 +15,11 @@ export class CronJobService {
       const result = await this.invoiceService.getDailyReport();
       console.log("###################");
 
-      await this.rabbitMQService.sendReport(process.env.RabbitMQ_QUEUE_NAME!, result)
-      
+      await this.rabbitMQService.sendReport(
+        process.env.RabbitMQ_QUEUE_NAME!,
+        result
+      );
+
       console.log(result);
       console.log("###################");
     } catch (error) {
@@ -23,7 +29,7 @@ export class CronJobService {
 
   scheduleJob() {
     const job = new CronJob(
-      "* * * * *",
+      "0 12 * * *",
       async () => {
         await this.handleTask();
       },
