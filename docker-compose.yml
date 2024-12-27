@@ -1,5 +1,20 @@
 version: "3.8"
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
+      - "${RABBITMQ_MANAGEMENT_PORT}:${RABBITMQ_MANAGEMENT_PORT}"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
   backend:
     build: .
     container_name: backend
@@ -11,8 +26,28 @@ services:
       - DATABASE_HOST=db
       - MONGO_PORT=${MONGO_PORT}
       - DATABASE_NAME=${DATABASE_NAME}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RabbitMQ_QUEUE_NAME=${RabbitMQ_QUEUE_NAME}
       # - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       # - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+
+  email_servie:
+    build: ../email-sender/
+    container_name: emailService
+    # ports:
+    #   - "${BACKEND_PORT}:${BACKEND_PORT}"
+    depends_on:
+      - backend
+      - rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RabbitMQ_QUEUE_NAME=${RabbitMQ_QUEUE_NAME}
 
   db:
     image: mongo
@@ -42,15 +77,6 @@ services:
       # - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     depends_on:
       - db
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
-      - "${RABBITMQ_MANAGEMENT_PORT}:${RABBITMQ_MANAGEMENT_PORT}"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
 
   nginx:
     image: nginx:latest
